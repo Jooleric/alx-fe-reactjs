@@ -1,5 +1,5 @@
 import WelcomeMessage from './components/WelcomeMessage';
-import Header from '.components/Header';
+import Header from './Header';
 import MainContent from './MainContent';
 import Footer from './Footer';
 
@@ -12,21 +12,10 @@ function App() {
     return (
         <div>
             <WelcomeMessage />
+            <Header />
+            <MainContent />
+            <Footer />
         </div>
     );
 }
-
-function Header() {
-    return 
-        <h1>Header </h1>;
-}
-function MainContent() {
-    return <p>MainContent </p>;
-}
-  
-function Footer() {
-    return <p>Footer </p>;
-}
-
-
 export default App;
