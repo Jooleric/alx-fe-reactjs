@@ -1,4 +1,5 @@
 import { createContext } from 'react';
 
-const UserContext = createContext(null); // Initialize with null or default data
+const UserContext = createContext(null); // default value can be null
+
 export default UserContext;
