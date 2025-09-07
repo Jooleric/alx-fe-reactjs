@@ -1,7 +1,8 @@
-import UserDetails from './UserDetails';
+// src/components/UserInfo.jsx
+import UserProfile from "./UserProfile";
 
 function UserInfo() {
-  return <UserDetails />;
+  return <UserProfile />;  // No props passed
 }
 
 export default UserInfo;

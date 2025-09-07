@@ -1,8 +1,9 @@
-import { useContext } from 'react';
-import UserContext from '../UserContext';
+// src/components/UserProfile.jsx
+import { useContext } from "react";
+import UserContext from "../UserContext";
 
-function UserDetails() {
-  const userData = useContext(UserContext);
+function UserProfile() {
+  const userData = useContext(UserContext); // Consume context
 
   return (
     <div>
@@ -12,4 +13,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default UserProfile;
