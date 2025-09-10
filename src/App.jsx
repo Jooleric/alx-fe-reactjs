@@ -1,7 +1,29 @@
+<<<<<<< HEAD
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+=======
+import AddRecipeForm from './components/AddRecipeForm';
+import RecipeList from './components/RecipeList';
+
+function App() {
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>Recipe Sharing App</h1>
+      <AddRecipeForm />
+      <RecipeList />
+    </div>
+  );
+}
+
+export default App;
+import React from 'react';
+import Header from './components/Header';
+import MainContent from './components/MainContent';
+import Footer from './components/Footer';
+import UserProfile from './components/UserProfile';
+>>>>>>> e9ac7dd7799720efb5c14076e8a8a1d27dc7cc63
 
 function App() {
   const [count, setCount] = useState(0)
