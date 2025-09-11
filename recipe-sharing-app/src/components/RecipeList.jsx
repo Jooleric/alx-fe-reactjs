@@ -1,17 +1,13 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import useRecipeStore from "./recipeStore";
 
 const RecipeList = () => {
   const recipes = useRecipeStore((state) =>
     state.searchTerm ? state.filteredRecipes : state.recipes
   );
-  const filterRecipes = useRecipeStore((state) => state.filterRecipes);
-  const searchTerm = useRecipeStore((state) => state.searchTerm);
-
-  useEffect(() => {
-    filterRecipes();
-  }, [searchTerm, filterRecipes]);
+  const addFavorite = useRecipeStore((state) => state.addFavorite);
+  const removeFavorite = useRecipeStore((state) => state.removeFavorite);
+  const favorites = useRecipeStore((state) => state.favorites);
 
   return (
     <div>
@@ -20,11 +16,23 @@ const RecipeList = () => {
         <p>No recipes found</p>
       ) : (
         <ul>
-          {recipes.map((recipe) => (
-            <li key={recipe.id}>
-              <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
-            </li>
-          ))}
+          {recipes.map((recipe) => {
+            const isFavorite = favorites.includes(recipe.id);
+            return (
+              <li key={recipe.id}>
+                {recipe.title}{" "}
+                <button
+                  onClick={() =>
+                    isFavorite
+                      ? removeFavorite(recipe.id)
+                      : addFavorite(recipe.id)
+                  }
+                >
+                  {isFavorite ? "Unfavorite" : "Favorite"}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

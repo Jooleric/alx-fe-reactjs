@@ -2,31 +2,36 @@ import { create } from "zustand";
 
 const useRecipeStore = create((set) => ({
   recipes: [],
-  filteredRecipes: [],
+  favorites: [],
+  recommendations: [],
   searchTerm: "",
+  filteredRecipes: [],
 
-  // Add a new recipe
   addRecipe: (recipe) =>
+    set((state) => ({ recipes: [...state.recipes, recipe] })),
+
+  addFavorite: (recipeId) =>
+    set((state) => ({ favorites: [...state.favorites, recipeId] })),
+
+  removeFavorite: (recipeId) =>
     set((state) => ({
-      recipes: [...state.recipes, { id: Date.now(), ...recipe }],
+      favorites: state.favorites.filter((id) => id !== recipeId),
     })),
 
-  // Set search term
-  setSearchTerm: (term) => set({ searchTerm: term }),
+  generateRecommendations: () =>
+    set((state) => ({
+      recommendations: state.recipes.filter(
+        (recipe) =>
+          !state.favorites.includes(recipe.id) && Math.random() > 0.5
+      ),
+    })),
 
-  // Filter recipes by title, ingredients, or prepTime
+  setSearchTerm: (term) => set({ searchTerm: term }),
   filterRecipes: () =>
     set((state) => ({
-      filteredRecipes: state.recipes.filter((r) => {
-        const search = state.searchTerm.toLowerCase();
-        const matchesTitle = r.title.toLowerCase().includes(search);
-        const matchesIngredients =
-          r.ingredients?.some((i) => i.toLowerCase().includes(search)) ||
-          false;
-        const matchesPrepTime =
-          r.prepTime?.toString().includes(search) || false;
-        return matchesTitle || matchesIngredients || matchesPrepTime;
-      }),
+      filteredRecipes: state.recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+      ),
     })),
 }));
 
