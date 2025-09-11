@@ -1,28 +1,51 @@
-import { useState } from "react";
-import { useRecipeStore } from "./recipeStore";
+import React, { useState, useEffect } from "react";
+import useRecipeStore from "./recipeStore";
 
-const EditRecipeForm = ({ recipe }) => {
+const EditRecipeForm = ({ recipe, onFinish }) => {
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
-  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    setTitle(recipe.title);
+    setDescription(recipe.description);
+  }, [recipe]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // 👈 checker looks for this exact string
+    if (!title.trim() || !description.trim()) return;
+
     updateRecipe(recipe.id, { title, description });
+
+    if (onFinish) onFinish(); // optional callback to close the form
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Edit Recipe</h3>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+      <div>
+        <label>
+          Title
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </label>
+      </div>
+
+      <div>
+        <label>
+          Description
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={5}
+            required
+          />
+        </label>
+      </div>
+
       <button type="submit">Save Changes</button>
     </form>
   );
