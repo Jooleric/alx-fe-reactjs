@@ -1,29 +1,32 @@
 import { create } from "zustand";
 
-export const useRecipeStore = create((set) => ({
+const useRecipeStore = create((set) => ({
   recipes: [],
+  filteredRecipes: [],
+  searchTerm: "",
 
-  // Add a new recipe with an id
+  // Add a new recipe
   addRecipe: (recipe) =>
     set((state) => ({
-      recipes: [
-        ...state.recipes,
-        { id: Date.now().toString(), ...recipe }, // auto-generate ID
-      ],
+      recipes: [...state.recipes, { id: Date.now(), ...recipe }],
     })),
 
-  // Update recipe by id
-  updateRecipe: (id, updatedRecipe) =>
-    set((state) => ({
-      recipes: state.recipes.map((recipe) =>
-        recipe.id === id ? { ...recipe, ...updatedRecipe } : recipe
-      ),
-    })),
+  // Set search term
+  setSearchTerm: (term) => set({ searchTerm: term }),
 
-  // Delete recipe by id
-  deleteRecipe: (id) =>
+  // Filter recipes by title, ingredients, or prepTime
+  filterRecipes: () =>
     set((state) => ({
-      recipes: state.recipes.filter((recipe) => recipe.id !== id),
+      filteredRecipes: state.recipes.filter((r) => {
+        const search = state.searchTerm.toLowerCase();
+        const matchesTitle = r.title.toLowerCase().includes(search);
+        const matchesIngredients =
+          r.ingredients?.some((i) => i.toLowerCase().includes(search)) ||
+          false;
+        const matchesPrepTime =
+          r.prepTime?.toString().includes(search) || false;
+        return matchesTitle || matchesIngredients || matchesPrepTime;
+      }),
     })),
 }));
 
