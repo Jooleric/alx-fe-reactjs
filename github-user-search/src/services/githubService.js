@@ -1,30 +1,31 @@
-import axios from "axios";
+// src/services/githubService.js
 
-const BASE_URL = "https://api.github.com";
+const BASE_URL = "https://api.github.com/search/users?q=";
 
-export async function fetchAdvancedUsers(username, location, minRepos) {
-  let query = "";
-
-  if (username) query += `${username} in:login `;
-  if (location) query += `location:${location} `;
-  if (minRepos) query += `repos:>=${minRepos}`;
-
+/**
+ * Search GitHub users with query parameters
+ * @param {string} username - the username or part of it
+ * @param {string} location - optional location filter
+ * @param {number} minRepos - optional minimum number of public repos
+ * @returns {Promise<object>} - search results
+ */
+export async function searchUsers(username, location = "", minRepos = 0) {
   try {
-    const response = await axios.get(`${BASE_URL}/search/users`, {
-      params: { q: query.trim() },
-    });
+    let query = `${username}`;
 
-    const users = response.data.items;
+    if (location) {
+      query += `+location:${location}`;
+    }
+    if (minRepos > 0) {
+      query += `+repos:>=${minRepos}`;
+    }
 
-    // fetch extra details like location & repos count for each user
-    const detailedUsers = await Promise.all(
-      users.map(async (user) => {
-        const detail = await axios.get(`${BASE_URL}/users/${user.login}`);
-        return { ...user, ...detail.data };
-      })
-    );
+    const response = await fetch(`${BASE_URL}${query}`);
+    if (!response.ok) {
+      throw new Error("GitHub API request failed");
+    }
 
-    return detailedUsers;
+    return await response.json();
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
