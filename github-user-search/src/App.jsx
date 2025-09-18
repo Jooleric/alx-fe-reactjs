@@ -1,12 +1,10 @@
-import Search from "./components/Search";
+import Search from "./components/fetchAdvancedUsers";
 
-function App() {
+export default function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1 style={{ textAlign: "center" }}>GitHub User Search</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">GitHub User Search</h1>
       <Search />
     </div>
   );
 }
-
-export default App;

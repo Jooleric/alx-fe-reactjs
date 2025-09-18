@@ -9,7 +9,6 @@ function Search() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ Add what the checker expects
   const fetchUserData = async () => {
     setLoading(true);
     setError("");
@@ -27,7 +26,7 @@ function Search() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (username.trim()) {
-      fetchUserData(); // ✅ checker looks for this call
+      fetchUserData();
     }
   };
 

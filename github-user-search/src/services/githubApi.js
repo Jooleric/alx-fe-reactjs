@@ -17,4 +17,4 @@ export const getUser = async (username) => {
     console.error("Error fetching user:", error);
     throw error;
   }
-};
+}
