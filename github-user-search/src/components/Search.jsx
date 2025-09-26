@@ -1,10 +1,10 @@
 // src/components/Search.jsx
 import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { fetchAdvancedUsers } from "../services/githubService"; // use advanced search
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]); // now stores multiple users
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -14,11 +14,15 @@ function Search() {
 
     setLoading(true);
     setError("");
-    setUser(null);
+    setUsers([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUser(data);
+      const data = await fetchAdvancedUsers(username); // fetch list of users
+      if (data.length === 0) {
+        setError("Looks like we cant find the user");
+      } else {
+        setUsers(data);
+      }
     } catch (err) {
       setError("Looks like we cant find the user");
     } finally {
@@ -46,16 +50,20 @@ function Search() {
       {/* Error */}
       {error && <p>{error}</p>}
 
-      {/* Show user details if found */}
-      {user && (
+      {/* Show multiple users */}
+      {users.length > 0 && (
         <div style={{ marginTop: "1rem" }}>
-          <img
-            src={user.avatar_url}
-            alt={user.login}
-            width="100"
-            style={{ borderRadius: "50%" }}
-          />
-          <p>{user.login}</p>
+          {users.map((user) => (
+            <div key={user.id} style={{ marginBottom: "1rem" }}>
+              <img
+                src={user.avatar_url}
+                alt={user.login}
+                width="100"
+                style={{ borderRadius: "50%" }}
+              />
+              <p>{user.login}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
