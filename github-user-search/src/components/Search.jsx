@@ -1,10 +1,10 @@
 // src/components/Search.jsx
 import { useState } from "react";
-import { fetchAdvancedUsers } from "../services/githubService"; // use advanced search
+import { fetchAdvancedUsers } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [users, setUsers] = useState([]); // now stores multiple users
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,7 +17,7 @@ function Search() {
     setUsers([]);
 
     try {
-      const data = await fetchAdvancedUsers(username); // fetch list of users
+      const data = await fetchAdvancedUsers(username);
       if (data.length === 0) {
         setError("Looks like we cant find the user");
       } else {
@@ -61,7 +61,17 @@ function Search() {
                 width="100"
                 style={{ borderRadius: "50%" }}
               />
-              <p>{user.login}</p>
+              <p>
+                <strong>{user.login}</strong>
+              </p>
+              {/* html_url → GitHub profile link */}
+              <p>
+                <a href={user.html_url} target="_blank" rel="noopener noreferrer">
+                  View Profile
+                </a>
+              </p>
+              {/* location → may be missing, so fallback */}
+              <p>Location: {user.location ? user.location : "Not specified"}</p>
             </div>
           ))}
         </div>
