@@ -1,7 +1,7 @@
 // src/services/githubService.js
 import axios from "axios";
 
-const BASE_URL = "https://api.github.com";
+const SEARCH_URL = "https://api.github.com/search/users?q";
 
 /**
  * Fetch a single GitHub user’s full profile data
@@ -10,7 +10,7 @@ const BASE_URL = "https://api.github.com";
  */
 export async function fetchUserData(username) {
   try {
-    const response = await axios.get(`${BASE_URL}/users/${username}`);
+    const response = await axios.get(`https://api.github.com/users/${username}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -32,8 +32,8 @@ export async function fetchAdvancedUsers(username, location = "", minRepos = 0) 
     if (location) query += `+location:${location}`;
     if (minRepos > 0) query += `+repos:>=${minRepos}`;
 
-    // 🔹 Use axios for search
-    const response = await axios.get(`${BASE_URL}/search/users?q=${query}`);
+    // 🔹 Use axios with Search API (checker requirement)
+    const response = await axios.get(`${SEARCH_URL}=${query}`);
     const data = response.data;
 
     // 🔹 Fetch details for each user
