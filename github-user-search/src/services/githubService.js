@@ -1,6 +1,22 @@
 // src/services/githubService.js
+import axios from "axios";
 
-const BASE_URL = "https://api.github.com/search/users?q=";
+const BASE_URL = "https://api.github.com";
+
+/**
+ * Fetch a single GitHub user’s full profile data
+ * @param {string} username - GitHub username
+ * @returns {Promise<object>} - user object
+ */
+export async function fetchUserData(username) {
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+}
 
 /**
  * Advanced GitHub User Search
@@ -11,32 +27,24 @@ const BASE_URL = "https://api.github.com/search/users?q=";
  */
 export async function fetchAdvancedUsers(username, location = "", minRepos = 0) {
   try {
-    // 🔹 Build the query string
+    // 🔹 Build query
     let query = `${username}`;
+    if (location) query += `+location:${location}`;
+    if (minRepos > 0) query += `+repos:>=${minRepos}`;
 
-    if (location) {
-      query += `+location:${location}`;
-    }
-    if (minRepos > 0) {
-      query += `+repos:>=${minRepos}`;
-    }
+    // 🔹 Use axios for search
+    const response = await axios.get(`${BASE_URL}/search/users?q=${query}`);
+    const data = response.data;
 
-    // 🔹 Call GitHub Search API
-    const response = await fetch(`${BASE_URL}${query}`);
-    if (!response.ok) {
-      throw new Error("GitHub API request failed");
-    }
-
-    const data = await response.json();
-
-    // The search API only returns limited fields,
-    // so we may need to fetch more details per user
+    // 🔹 Fetch details for each user
     const usersWithDetails = await Promise.all(
       data.items.map(async (user) => {
-        const detailsRes = await fetch(user.url); // user.url gives full profile API
-        if (!detailsRes.ok) return user; // fallback to basic data
-        const details = await detailsRes.json();
-        return { ...user, ...details };
+        try {
+          const details = await axios.get(user.url);
+          return { ...user, ...details.data };
+        } catch {
+          return user; // fallback if details fetch fails
+        }
       })
     );
 
