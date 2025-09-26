@@ -1,6 +1,6 @@
 // src/components/Search.jsx
 import { useState } from "react";
-import { fetchAdvancedUsers } from "../services/githubService";
+import { fetchUserData, fetchAdvancedUsers } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
@@ -17,14 +17,23 @@ function Search() {
     setUsers([]);
 
     try {
-      const data = await fetchAdvancedUsers(username);
-      if (data.length === 0) {
-        setError("Looks like we cant find the user");
-      } else {
-        setUsers(data);
-      }
+      // First try single user fetch
+      const singleUser = await fetchUserData(username);
+
+      // Wrap in array so we can still use map()
+      setUsers([singleUser]);
     } catch (err) {
-      setError("Looks like we cant find the user");
+      try {
+        // If single fetch fails, fallback to search API
+        const data = await fetchAdvancedUsers(username);
+        if (data.length === 0) {
+          setError("Looks like we cant find the user");
+        } else {
+          setUsers(data);
+        }
+      } catch {
+        setError("Looks like we cant find the user");
+      }
     } finally {
       setLoading(false);
     }
@@ -50,7 +59,7 @@ function Search() {
       {/* Error */}
       {error && <p>{error}</p>}
 
-      {/* Show multiple users */}
+      {/* Show one or multiple users */}
       {users.length > 0 && (
         <div style={{ marginTop: "1rem" }}>
           {users.map((user) => (
