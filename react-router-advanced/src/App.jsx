@@ -2,13 +2,11 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Profile from "./pages/Profile";
 import BlogPost from "./pages/BlogPost";
 import ProfileDetails from "./pages/ProfileDetails";
 import ProfileSettings from "./pages/ProfileSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Profile from "./components/Profile";
-
+import Profile from "./components/Profile"; // ✅ keep this one only
 
 function App() {
   return (
@@ -38,8 +36,8 @@ function App() {
             <Route path="settings" element={<ProfileSettings />} />
           </Route>
 
-          {/* Dynamic route */}
-          <Route path="/blog/:postId" element={<BlogPost />} />
+          {/* ✅ Dynamic route must use /blog/:id */}
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Routes>
       </div>
     </BrowserRouter>
