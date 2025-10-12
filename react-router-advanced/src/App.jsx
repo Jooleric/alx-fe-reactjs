@@ -7,6 +7,8 @@ import BlogPost from "./pages/BlogPost";
 import ProfileDetails from "./pages/ProfileDetails";
 import ProfileSettings from "./pages/ProfileSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./components/Profile";
+
 
 function App() {
   return (
